@@ -4,25 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/Character.h"
 #include "ac_WallRunComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MOVEMENTSYSTEM_API Uac_WallRunComponent : public UActorComponent
+class MOVEMENTSYSTEM_API UWallRunComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+private:
+
+	//reference to character
+	ACharacter* m_wallRunCharacter;
+	UCharacterMovementComponent* m_movementComponent;
+
 public:	
 	// Sets default values for this component's properties
-	Uac_WallRunComponent();
+	UWallRunComponent();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+public:	
+
 
 		
 };
