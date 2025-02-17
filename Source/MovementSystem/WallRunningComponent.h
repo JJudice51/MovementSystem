@@ -27,6 +27,7 @@ private:
 	bool b_isWallRunning;
 	bool b_isJumping;
 	FVector fv_wallRunDirection;
+	FVector fv_wallNormal;
 
 	///variables for manipulating gravity
 

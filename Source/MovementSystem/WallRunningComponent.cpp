@@ -33,9 +33,8 @@ void UWallRunningComponent::BeginPlay()
 	if (ac_wallRunCharacter)
 	{
 		uc_movementComponent = ac_wallRunCharacter->GetCharacterMovement();
-
-		
 	}
+	
 
 }
 
@@ -49,10 +48,10 @@ void UWallRunningComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	if (b_isJumping && !b_isWallRunning)
 		WallCheck();
 
+	//if wallrunning then make wallrundirection the character's movement.
 	if (b_isWallRunning)
 	{
-		FVector wallRunVelocity = fv_wallRunDirection * 600.0f;
-		ac_wallRunCharacter->GetCharacterMovement()->Velocity = wallRunVelocity;
+		
 	}
 }
 
@@ -94,21 +93,37 @@ void UWallRunningComponent::WallRunStart(const FVector& wallNormal)
 {
 	b_isWallRunning = true;
 
+	//store the walls normal later use. 
+	fv_wallNormal = wallNormal;
+
 	//determine movment direction while wall running
-	fv_wallRunDirection = FVector::CrossProduct(wallNormal, FVector::UpVector) * -1.0f;
+	fv_wallRunDirection = FVector::CrossProduct(fv_wallNormal, FVector::UpVector) ;
 	fv_wallRunDirection.Normalize();
 
+	if (uc_movementComponent)
+	{
+		uc_movementComponent->bOrientRotationToMovement = false; // Prevents character from trying to face forward
+		uc_movementComponent->SetPlaneConstraintEnabled(true);   // Enable constraint so the character moves only along the wall
+		uc_movementComponent->SetPlaneConstraintNormal(fv_wallNormal); // Locks movement along the wall
+	}
+
+	//apply continous movement along the wall
+	FVector wallRunVelocity = fv_wallRunDirection * 600.0f;
+	ac_wallRunCharacter->GetCharacterMovement()->Velocity = wallRunVelocity;
 
 	//reduce gravity
-	f_normalGravityScale = f_wallRunGravityScale;
+	uc_movementComponent->GravityScale = f_wallRunGravityScale;
 }
 
 void UWallRunningComponent::WallRunStop()
 {
 	b_isWallRunning = false;
 
+	//disable move constraint
+	uc_movementComponent->SetPlaneConstraintEnabled(false);
+
 	//restore normal gravity
-	f_normalGravityScale = 1.0f;
+	uc_movementComponent->GravityScale = f_normalGravityScale;
 }
 
 void UWallRunningComponent::OnJump()
