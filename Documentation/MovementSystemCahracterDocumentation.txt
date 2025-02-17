@@ -1,0 +1,21 @@
+Name				Type			Description
+AMovementSystemCharacter	ACharacter		Custom third-person character with wall running and enhanced input.
+
+Properties
+CameraBoom			USpringArmComponent*	Positions the camera behind the character.
+FollowCamera			UCameraComponent*	Third-person follow camera.
+DefaultMappingContext		UInputMappingContext*	Stores the default input mappings.
+JumpAction			UInputAction*		Handles the jump input.
+MoveAction			UInputAction*		Handles movement input.
+LookAction			UInputAction*		Handles looking input.
+WallRunningComponent		UWallRunningComponent*	Enables wall running mechanics.
+
+Functions
+Move(const FInputActionValue&)	void			Handles movement input.
+Look(const FInputActionValue&)	void			Handles camera rotation.
+SetupPlayerInputComponent()	void			Binds input actions to functions.
+BeginPlay()			void			Called when the game starts.
+Jump()				void (Override)		Handles jump logic and wall running.
+Landed(const FHitResult&)	void (Override)		Called when the player lands.
+GetCameraBoom()			USpringArmComponent*	Returns the camera boom.
+GetFollowCamera()		UCameraComponent*	Returns the follow camera.

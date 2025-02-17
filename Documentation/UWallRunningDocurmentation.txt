@@ -1,0 +1,25 @@
+Class UWallRunningComponent : Actor Component that enables wall running for characters in a third-person movement system. This component detects walls, modifies gravity, and allows a character to run along walls when jumping.
+
+Name				Type				Description
+UWallRunningComponent		UActorComponent			Enables wall running functionality for a character in Unreal Engine.
+
+Properties
+ac_wallRunCharacter		ACharacter*			Reference to the character using this component.
+uc_movementComponent		UCharacterMovementComponent*	Character's movement component.
+b_isWallRunning			bool				true if the character is currently wall running.
+b_isJumping			bool				true if the character has jumped.
+fv_wallRunDirection		FVector				Direction the player moves while wall running.
+fv_wallNormal			FVector				Stores the detected wall’s normal vector.
+f_wallRunGravityScale		float				Gravity scale when wall running (low gravity effect).
+f_normalGravityScale		float				Default gravity scale when not wall running.
+
+Functions
+WallCheck()			void				Detects walls on either side of the character.
+WallRunStart()			void				Starts wall running by modifying gravity and movement.
+WallRunStop()			void				Stops wall running and restores normal gravity.
+OnJump()			UFUNCTION()			Triggered when the player jumps; starts wall running if a wall is detected.
+OnLanded(const FHitResult& Hit)	UFUNCTION()			Resets wall running state when the player lands.
+
+Debugging & Testing		Command										Description
+
+Enable Line Trace Debugging	DrawDebugLine(GetWorld(), Start, EndRight, FColor::Red, false, 1.0f, 0, 2.0f);	Shows wall detection traces.

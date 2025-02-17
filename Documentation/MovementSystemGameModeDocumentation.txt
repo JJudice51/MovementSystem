@@ -1,0 +1,12 @@
+class MovementSystemGameMode
+This class defines the custom game mode for the Movement System project. It extends AGameModeBase and can be used to set custom rules, spawning logic, and game state management in Unreal Engine.
+
+
+Name				Type			Description
+AMovementSystemGameMode		AGameModeBase		Custom game mode for the movement system project.
+
+ Properties
+
+minimalapi			UCLASS Specifier	Limits API exposure for optimization.
+
+AMovementSystemGameMode()	Constructor		Initializes the game mode.
