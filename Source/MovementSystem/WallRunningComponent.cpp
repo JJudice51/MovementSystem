@@ -17,7 +17,7 @@ UWallRunningComponent::UWallRunningComponent()
 
 	b_isWallRunning = false;
 	b_isJumping = false;
-	f_wallRunGravityScale = 0.0f;
+	f_wallRunGravityScale = 0.1f;
 	f_normalGravityScale = 1.0f;
 
 }
@@ -48,6 +48,12 @@ void UWallRunningComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	//only check for walls when character is jumping and not already on a wall
 	if (b_isJumping && !b_isWallRunning)
 		WallCheck();
+
+	if (b_isWallRunning)
+	{
+		FVector wallRunVelocity = fv_wallRunDirection * 600.0f;
+		ac_wallRunCharacter->GetCharacterMovement()->Velocity = wallRunVelocity;
+	}
 }
 
 void UWallRunningComponent::WallCheck()
@@ -89,11 +95,9 @@ void UWallRunningComponent::WallRunStart(const FVector& wallNormal)
 	b_isWallRunning = true;
 
 	//determine movment direction while wall running
-	fv_wallRunDirection = FVector::CrossProduct(wallNormal, FVector::UpVector);
+	fv_wallRunDirection = FVector::CrossProduct(wallNormal, FVector::UpVector) * -1.0f;
 	fv_wallRunDirection.Normalize();
 
-	//apply movemnt along wall
-	ac_wallRunCharacter->LaunchCharacter(fv_wallRunDirection * 600.0f, true, false);
 
 	//reduce gravity
 	f_normalGravityScale = f_wallRunGravityScale;
