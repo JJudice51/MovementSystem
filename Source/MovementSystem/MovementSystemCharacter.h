@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "WallRunningComponent.h"
 #include "MovementSystemCharacter.generated.h"
 
 class USpringArmComponent;
@@ -64,10 +65,19 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Wall Running", meta=(AllowPrivateAccess = "true"))
+	UWallRunningComponent* WallRunningComponent;
+
+
 };
 

@@ -34,9 +34,7 @@ void UWallRunningComponent::BeginPlay()
 	{
 		uc_movementComponent = ac_wallRunCharacter->GetCharacterMovement();
 
-		//binding a jump event
-		ac_wallRunCharacter->Jump().AddDynamic(this, &UWallRunningComponent::OnJump);
-		ac_wallRunCharacter->LandedDelegate.AddDynamic(this, UWallRunningComponent::OnLanded);
+		
 	}
 
 }

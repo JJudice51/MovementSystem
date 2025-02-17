@@ -43,11 +43,6 @@ private:
 	//called when wall run is to stop and ends wall run functionality.
 	void WallRunStop();
 
-	UFUNCTION()
-	void OnJump();
-
-	UFUNCTION()
-	void OnLanded(const FHitResult& Hit);
 
 public:
 	// Sets default values for this component's properties
@@ -58,9 +53,16 @@ protected:
 	virtual void BeginPlay() override;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-
+	
 public:
+
+	UFUNCTION()
+	void OnJump();
+
+	UFUNCTION()
+	void OnLanded(const FHitResult& Hit);
+
+
 
 
 
