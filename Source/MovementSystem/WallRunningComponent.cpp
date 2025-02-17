@@ -35,7 +35,7 @@ void UWallRunningComponent::BeginPlay()
 		uc_movementComponent = ac_wallRunCharacter->GetCharacterMovement();
 
 		//binding a jump event
-		ac_wallRunCharacter->OnJumped().AddDynamic(this, &UWallRunningComponent::OnJump);
+		ac_wallRunCharacter->Jump().AddDynamic(this, &UWallRunningComponent::OnJump);
 		ac_wallRunCharacter->LandedDelegate.AddDynamic(this, UWallRunningComponent::OnLanded);
 	}
 
@@ -47,28 +47,79 @@ void UWallRunningComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	//only check for walls when character is jumping and not already on a wall
+	if (b_isJumping && !b_isWallRunning)
+		WallCheck();
 }
 
 void UWallRunningComponent::WallCheck()
 {
-	
+	FVector start = ac_wallRunCharacter->GetActorLocation();
+	FVector rightVector = ac_wallRunCharacter->GetActorRightVector();
+
+	FVector endRight = start + (rightVector * 100.0f);
+	FVector endLeft = start - (rightVector * 100.0f);
+
+	FHitResult hitRight, hitLeft;
+	FCollisionQueryParams traceParams;
+	traceParams.AddIgnoredActor(ac_wallRunCharacter); // insures the character will ignore itself
+
+	bool bHitRight = GetWorld()->LineTraceSingleByChannel(hitRight, start, endRight, ECC_Visibility, traceParams);
+	bool bHitLeft = GetWorld()->LineTraceSingleByChannel(hitLeft, start, endLeft, ECC_Visibility, traceParams);
+
+	//makes debug lines visible in the scene
+	DrawDebugLine(GetWorld(), start, endRight, FColor::Red, false, 0.1f, 0, 2.0f);
+	DrawDebugLine(GetWorld(), start, endLeft, FColor::Red, false, 0.1f, 0, 2.0f);
+
+	//if wall is detected
+	if (bHitRight)
+	{
+		WallRunStart(hitRight.ImpactNormal);
+	}
+	else if (bHitLeft)
+	{
+		WallRunStart(hitLeft.ImpactNormal);
+	}
 }
+
+
+
+
 
 void UWallRunningComponent::WallRunStart(const FVector& wallNormal)
 {
+	b_isWallRunning = true;
+
+	//determine movment direction while wall running
+	fv_wallRunDirection = FVector::CrossProduct(wallNormal, FVector::UpVector);
+	fv_wallRunDirection.Normalize();
+
+	//apply movemnt along wall
+	ac_wallRunCharacter->LaunchCharacter(fv_wallRunDirection * 600.0f, true, false);
+
+	//reduce gravity
+	f_normalGravityScale = f_wallRunGravityScale;
 }
 
 void UWallRunningComponent::WallRunStop()
 {
+	b_isWallRunning = false;
+
+	//restore normal gravity
+	f_normalGravityScale = 1.0f;
 }
 
 void UWallRunningComponent::OnJump()
 {
+	b_isJumping = true;
+
+	if (b_isWallRunning)
+		WallRunStop();
 }
 
 void UWallRunningComponent::OnLanded(const FHitResult& Hit)
 {
+	b_isJumping = false;
 }
 
 
